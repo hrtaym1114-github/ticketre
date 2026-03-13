@@ -1,0 +1,92 @@
+/* チケトレ — Content Script CSS */
+
+/* オーバーレイ */
+#ticketre-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 999999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.ticketre-overlay-inner {
+  background: #1a1a2e;
+  border: 2px solid #e94560;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  max-width: 480px;
+  width: 90%;
+  color: #fff;
+  box-shadow: 0 0 60px rgba(233, 69, 96, 0.3);
+}
+
+.ticketre-overlay-title {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.ticketre-overlay-message {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.ticketre-overlay-timer {
+  font-size: 24px;
+  font-weight: bold;
+  color: #e94560;
+  margin-bottom: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ticketre-overlay-retry {
+  font-size: 14px;
+  color: #888;
+}
+
+/* 通知バー */
+#ticketre-notif {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: #16213e;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 10px;
+  border-left: 4px solid #4CAF50;
+  z-index: 999998;
+  font-size: 14px;
+  max-width: 360px;
+  line-height: 1.5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  display: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* 空席ハイライト */
+.ticketre-available {
+  animation: ticketre-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ticketre-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.ticketre-few {
+  animation: ticketre-blink 1s ease-in-out infinite;
+}
+
+@keyframes ticketre-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

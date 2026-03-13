@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0f0f23;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      padding: 0;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 14px 16px;
+      border-bottom: 2px solid #e94560;
+      text-align: center;
+    }
+    .header h1 { font-size: 16px; color: #fff; }
+    .timer {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e94560;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-bar {
+      padding: 8px 16px;
+      background: #16213e;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #888;
+      border-bottom: 1px solid #1a1a2e;
+    }
+
+    .tabs-container { padding: 8px; }
+
+    .tab-card {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 6px;
+      border-left: 4px solid #333;
+      transition: all 0.3s;
+    }
+    .tab-card.status-purchase {
+      border-left-color: #4CAF50;
+      background: #1a2e1a;
+      animation: glow-green 1.5s ease-in-out infinite;
+    }
+    .tab-card.status-waiting { border-left-color: #FF9800; }
+    .tab-card.status-sorry { border-left-color: #e94560; }
+    .tab-card.status-sold-out { border-left-color: #666; opacity: 0.6; }
+    .tab-card.status-loading { border-left-color: #2196F3; }
+    .tab-card.status-blank { border-left-color: #9E9E9E; }
+    .tab-card.status-login { border-left-color: #FF9800; }
+    .tab-card.status-confirm { border-left-color: #4CAF50; }
+
+    @keyframes glow-green {
+      0%, 100% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); }
+      50% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.5); }
+    }
+
+    .tab-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .tab-show { font-weight: bold; font-size: 14px; }
+    .tab-priority {
+      font-size: 11px;
+      background: #333;
+      padding: 2px 8px;
+      border-radius: 10px;
+      color: #aaa;
+    }
+    .tab-priority.p1 { background: #e94560; color: #fff; }
+    .tab-priority.p2 { background: #FF9800; color: #fff; }
+    .tab-priority.p3 { background: #2196F3; color: #fff; }
+
+    .tab-status {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-status-icon { font-size: 16px; }
+    .tab-status-text { color: #aaa; }
+    .tab-retry { color: #e94560; font-size: 11px; margin-top: 2px; }
+
+    .tab-actions { margin-top: 8px; }
+    .tab-actions button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #e94560;
+      color: #fff;
+      font-weight: bold;
+    }
+    .tab-actions button:hover { background: #c73e56; }
+
+    .log-section {
+      padding: 8px 16px;
+      border-top: 1px solid #1a1a2e;
+    }
+    .log-title {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .log-list {
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 11px;
+      font-family: monospace;
+      color: #666;
+    }
+    .log-entry { padding: 2px 0; }
+    .log-entry.important { color: #4CAF50; }
+    .log-entry.error { color: #e94560; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #444;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 13px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎫 チケトレ 戦況モニター</h1>
+  <div class="timer" id="timer">--:--</div>
+</div>
+
+<div class="status-bar">
+  <span id="totalRetries">リトライ: 0回</span>
+  <span id="tabCount">タブ: 0</span>
+  <span id="battleStatus" style="color:#888;">待機中</span>
+</div>
+
+<div class="tabs-container" id="tabsContainer">
+  <div class="empty-state">
+    <div class="icon">🎫</div>
+    <p>ポップアップから「🚀 発射」を押すと<br>ここに各タブの状況がリアルタイム表示されます</p>
+  </div>
+</div>
+
+<div class="log-section">
+  <div class="log-title">📋 ログ</div>
+  <div class="log-list" id="logList">
+    <div class="log-entry">チケトレ 戦況モニター起動</div>
+  </div>
+</div>
+
+<script src="sidepanel.js"></script>
+</body>
+</html>

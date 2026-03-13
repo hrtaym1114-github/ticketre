@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 400px;
+      max-height: 580px;
+      overflow-y: auto;
+      background: #0f0f23;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 16px;
+      text-align: center;
+      border-bottom: 2px solid #e94560;
+    }
+    .header h1 { font-size: 20px; color: #fff; }
+    .header .subtitle { font-size: 11px; color: #888; margin-top: 4px; }
+
+    .section {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1a1a2e;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #e94560;
+      margin-bottom: 8px;
+    }
+
+    label { display: block; margin-bottom: 6px; font-size: 12px; color: #aaa; }
+    input[type="text"], input[type="password"], input[type="number"], select {
+      width: 100%;
+      padding: 8px 10px;
+      background: #16213e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    input:focus, select:focus { outline: none; border-color: #e94560; }
+
+    .row { display: flex; gap: 10px; }
+    .row > div { flex: 1; }
+
+    .show-list { margin-top: 4px; }
+    .show-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: #16213e;
+      border-radius: 6px;
+      margin-bottom: 4px;
+    }
+    .show-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: #e94560; }
+    .show-item .show-name { flex: 1; font-size: 12px; }
+    .show-item select { width: 60px; margin-bottom: 0; padding: 4px; font-size: 11px; }
+
+    .url-input {
+      display: flex; gap: 4px; align-items: center; margin-top: 4px;
+    }
+    .url-input input { flex: 1; margin-bottom: 0; font-size: 11px; padding: 4px 6px; }
+    .url-input .status { font-size: 12px; }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn-primary { background: #e94560; color: #fff; }
+    .btn-primary:hover { background: #c73e56; }
+    .btn-secondary { background: #16213e; color: #e94560; border: 1px solid #e94560; }
+    .btn-secondary:hover { background: #1a1a2e; }
+    .btn-danger { background: #333; color: #e94560; }
+    .btn-danger:hover { background: #444; }
+
+    .btn-row { display: flex; gap: 8px; }
+    .btn-row .btn { flex: 1; }
+
+    .toggle-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0;
+    }
+    .toggle-row label { margin-bottom: 0; color: #ccc; }
+    .toggle {
+      position: relative; width: 40px; height: 22px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle .slider {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: #333; border-radius: 22px; cursor: pointer; transition: 0.3s;
+    }
+    .toggle .slider::before {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      left: 3px; bottom: 3px; background: #888; border-radius: 50%; transition: 0.3s;
+    }
+    .toggle input:checked + .slider { background: #e94560; }
+    .toggle input:checked + .slider::before { transform: translateX(18px); background: #fff; }
+
+    .status-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: bold;
+    }
+    .status-badge.ready { background: #4CAF50; color: #fff; }
+    .status-badge.off { background: #333; color: #888; }
+
+    .footer {
+      padding: 8px 16px;
+      text-align: center;
+      font-size: 10px;
+      color: #444;
+    }
+
+    .add-show-btn {
+      padding: 6px; width: 100%; background: #1a1a2e; border: 1px dashed #444;
+      border-radius: 6px; color: #888; cursor: pointer; font-size: 12px; margin-top: 4px;
+    }
+    .add-show-btn:hover { border-color: #e94560; color: #e94560; }
+
+    .warning {
+      background: #2a1a00; border: 1px solid #e97820; border-radius: 6px;
+      padding: 8px; font-size: 11px; color: #ffaa44; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎫 チケトレ</h1>
+  <div class="subtitle">チケット購入アシスタント v0.1.0</div>
+</div>
+
+<!-- アカウント情報 -->
+<div class="section">
+  <div class="section-title">🔐 アカウント情報</div>
+  <label>ぴあ会員ID（メールアドレス）</label>
+  <input type="text" id="userId" placeholder="example@mail.com">
+  <label>パスワード</label>
+  <input type="password" id="password" placeholder="パスワード">
+  <div class="warning">⚠ 認証情報はローカルのみに保存されます。外部送信はしません。</div>
+</div>
+
+<!-- 決済設定 -->
+<div class="section">
+  <div class="section-title">💳 決済設定</div>
+  <div class="row">
+    <div>
+      <label>決済方法</label>
+      <select id="paymentMethod">
+        <option value="credit">クレジットカード</option>
+        <option value="convenience">コンビニ決済</option>
+      </select>
+    </div>
+    <div>
+      <label>枚数</label>
+      <select id="ticketCount">
+        <option value="1">1枚</option>
+        <option value="2" selected>2枚</option>
+        <option value="3">3枚</option>
+        <option value="4">4枚</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- ターゲット公演 -->
+<div class="section">
+  <div class="section-title">🎯 ターゲット公演</div>
+  <div id="showList" class="show-list">
+    <!-- 動的に追加 -->
+  </div>
+  <button class="add-show-btn" id="addShowBtn">+ 公演を追加</button>
+</div>
+
+<!-- リトライ設定 -->
+<div class="section">
+  <div class="section-title">🔄 sorry対策</div>
+  <div class="toggle-row">
+    <label>自動リトライ</label>
+    <div class="toggle">
+      <input type="checkbox" id="retryEnabled" checked>
+      <span class="slider"></span>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label>リトライ間隔（秒）</label>
+      <input type="number" id="retryInterval" value="5" min="3" max="30">
+    </div>
+    <div>
+      <label>最大リトライ回数</label>
+      <input type="number" id="maxRetries" value="30" min="5" max="100">
+    </div>
+  </div>
+  <div class="toggle-row">
+    <label>音声アラート</label>
+    <div class="toggle">
+      <input type="checkbox" id="soundEnabled" checked>
+      <span class="slider"></span>
+    </div>
+  </div>
+  <div class="toggle-row">
+    <label>ログイン自動入力</label>
+    <div class="toggle">
+      <input type="checkbox" id="autoFillEnabled" checked>
+      <span class="slider"></span>
+    </div>
+  </div>
+</div>
+
+<!-- アクション -->
+<div class="section">
+  <div class="btn-row">
+    <button class="btn btn-secondary" id="saveBtn">💾 保存</button>
+    <button class="btn btn-primary" id="launchBtn">🚀 発射</button>
+  </div>
+  <button class="btn btn-danger" id="stopBtn" style="margin-top:6px; display:none;">⏹ 停止</button>
+  <button class="btn btn-secondary" id="sidepanelBtn" style="margin-top:6px;">📊 戦況モニターを開く</button>
+</div>
+
+<div class="footer">チケトレ v0.1.0 — ローカル動作 / データ送信なし</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
