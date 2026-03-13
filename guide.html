@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎫 チケトレ 使い方ガイド</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: #0f0f23;
+      color: #e0e0e0;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    /* ヘッダー */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      text-align: center;
+      padding: 60px 20px 40px;
+      border-bottom: 3px solid #e94560;
+    }
+    .hero h1 { font-size: 42px; color: #fff; margin-bottom: 8px; }
+    .hero .subtitle { font-size: 16px; color: #aaa; }
+    .hero .version { font-size: 12px; color: #666; margin-top: 8px; }
+
+    /* コンテナ */
+    .container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* セクション */
+    .section {
+      padding: 40px 0;
+      border-bottom: 1px solid #1a1a2e;
+    }
+    .section:last-child { border-bottom: none; }
+    .section-number {
+      display: inline-block;
+      background: #e94560;
+      color: #fff;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 36px;
+      font-weight: bold;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    .section h2 {
+      font-size: 22px;
+      color: #fff;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ステップ */
+    .steps { counter-reset: step; }
+    .step {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      border-left: 4px solid #e94560;
+      position: relative;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e94560;
+      color: #fff;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .step strong { color: #fff; }
+    .step code {
+      background: #0f0f23;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #e94560;
+    }
+
+    /* カード */
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 600px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .card .icon { font-size: 32px; margin-bottom: 8px; }
+    .card .label { font-size: 14px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+    .card .desc { font-size: 12px; color: #aaa; }
+
+    /* テーブル */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    th {
+      background: #1a1a2e;
+      color: #e94560;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: bold;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #1a1a2e;
+    }
+    tr:hover { background: #16213e; }
+
+    /* 警告・ヒント */
+    .warning {
+      background: #2a1a00;
+      border: 1px solid #e97820;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #ffaa44;
+      margin: 16px 0;
+    }
+    .tip {
+      background: #0a2a1a;
+      border: 1px solid #4CAF50;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #81C784;
+      margin: 16px 0;
+    }
+
+    /* FAQ */
+    details {
+      background: #16213e;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    summary {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #fff;
+      list-style: none;
+    }
+    summary::before {
+      content: '▶ ';
+      color: #e94560;
+      font-size: 12px;
+    }
+    details[open] summary::before { content: '▼ '; }
+    details p {
+      padding: 0 16px 14px;
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    /* タイムライン */
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e94560;
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 6px;
+      width: 10px; height: 10px;
+      background: #e94560;
+      border-radius: 50%;
+    }
+    .tl-time { font-size: 12px; color: #e94560; font-weight: bold; }
+    .tl-action { color: #ccc; margin-top: 2px; }
+
+    /* フッター */
+    .footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #444;
+      font-size: 12px;
+    }
+    .footer a { color: #e94560; text-decoration: none; }
+
+    /* 画像風プレースホルダー */
+    .screenshot {
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin: 16px 0;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <h1>🎫 チケトレ</h1>
+  <div class="subtitle">チケットぴあ購入アシスト Chrome 拡張機能</div>
+  <div class="version">v0.1.0 — ローカル動作 / データ外部送信なし</div>
+</div>
+
+<div class="container">
+
+  <!-- できること -->
+  <div class="section">
+    <h2><span class="section-number">✨</span>チケトレでできること</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon">❌➡️🔄</div>
+        <div class="label">sorryページ自動リトライ</div>
+        <div class="desc">アクセス集中ページを検知して<br>自動で再アクセス（5秒±2秒間隔）</div>
+      </div>
+      <div class="card">
+        <div class="icon">📋✅</div>
+        <div class="label">同意画面の自動通過</div>
+        <div class="desc">LP同意チェックボックス＆<br>ボタンを自動クリック</div>
+      </div>
+      <div class="card">
+        <div class="icon">🟢🟠</div>
+        <div class="label">座席ハイライト</div>
+        <div class="desc">空席(○◎)を緑、残りわずか(△)を<br>オレンジで強調表示</div>
+      </div>
+      <div class="card">
+        <div class="icon">🔊</div>
+        <div class="label">音声アラート</div>
+        <div class="desc">購入画面に到達したら<br>ビープ音でお知らせ</div>
+      </div>
+      <div class="card">
+        <div class="icon">🔐</div>
+        <div class="label">ログイン自動入力</div>
+        <div class="desc">保存したID/パスワードを<br>自動で入力</div>
+      </div>
+      <div class="card">
+        <div class="icon">📊</div>
+        <div class="label">戦況モニター</div>
+        <div class="desc">サイドパネルで<br>リアルタイム状況表示</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- インストール -->
+  <div class="section">
+    <h2><span class="section-number">1</span>インストール方法</h2>
+
+    <h3 style="color:#e94560; margin-bottom:12px;">📥 ダウンロード</h3>
+    <div class="steps">
+      <div class="step">
+        <a href="https://github.com/hrtaym1114-github/ticketre" style="color:#e94560;">https://github.com/hrtaym1114-github/ticketre</a> にアクセス
+      </div>
+      <div class="step">
+        緑色の <strong>「Code」</strong> ボタンをクリック → <strong>「Download ZIP」</strong> を選択
+      </div>
+      <div class="step">
+        ダウンロードしたZIPファイルを<strong>解凍</strong>する（ダブルクリックでOK）
+      </div>
+    </div>
+
+    <h3 style="color:#e94560; margin: 20px 0 12px;">🧩 Chromeに追加</h3>
+    <div class="steps">
+      <div class="step">
+        Chromeのアドレスバーに <code>chrome://extensions</code> と入力してEnter
+      </div>
+      <div class="step">
+        右上の <strong>「デベロッパーモード」</strong> をONにする
+      </div>
+      <div class="step">
+        <strong>「パッケージ化されていない拡張機能を読み込む」</strong> をクリック
+      </div>
+      <div class="step">
+        解凍した <strong>ticketre フォルダ</strong>（中に manifest.json があるフォルダ）を選択
+      </div>
+      <div class="step">
+        🎫 チケトレのアイコンが表示されたら成功！
+      </div>
+    </div>
+
+    <div class="tip">
+      💡 <strong>Brave でも使えます</strong> — 同じ手順で <code>brave://extensions</code> からインストール可能です。
+    </div>
+  </div>
+
+  <!-- 初期設定 -->
+  <div class="section">
+    <h2><span class="section-number">2</span>初期設定</h2>
+    <p style="margin-bottom:16px;">Chrome右上の 🎫 アイコンをクリックしてポップアップを開きます。</p>
+
+    <div class="steps">
+      <div class="step">
+        <strong>🔐 アカウント情報</strong><br>
+        ぴあ会員のメールアドレスとパスワードを入力<br>
+        <span style="color:#888; font-size:12px;">※ ブラウザのローカルにのみ保存。外部には一切送信しません。</span>
+      </div>
+      <div class="step">
+        <strong>💳 決済設定</strong><br>
+        決済方法（クレジットカード / コンビニ）と枚数を選択
+      </div>
+      <div class="step">
+        <strong>🎯 ターゲット公演</strong><br>
+        攻めたい公演のURLを設定（1ブラウザにつき1公演を推奨）<br>
+        <span style="color:#888; font-size:12px;">URLの例: https://ticket.pia.jp/sp/ticketInformation.do?eventCd=XXXXXXX&rlsCd=001</span>
+      </div>
+      <div class="step">
+        <strong>🔄 sorry対策</strong><br>
+        リトライ間隔（推奨: 5秒）、最大リトライ回数、音声アラートのON/OFFを設定
+      </div>
+      <div class="step">
+        <strong>💾 保存</strong> ボタンを押して設定を保存
+      </div>
+    </div>
+
+    <div class="warning">
+      ⚠️ <strong>1ブラウザ = 1公演</strong> にしてください。同じブラウザで2公演を開くと、ぴあのサーバーがセッション競合を起こして片方が弾かれます。
+    </div>
+  </div>
+
+  <!-- 本番の流れ -->
+  <div class="section">
+    <h2><span class="section-number">3</span>本番の流れ（発売日当日）</h2>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-time">発売5分前</div>
+        <div class="tl-action">ポップアップを開いて設定を確認。ターゲット公演のURLが正しいか最終チェック。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">発売1〜2分前</div>
+        <div class="tl-action"><strong>🚀 発射</strong> ボタンを押す！<br>タブが自動で開き、ページ監視が始まります。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">発売直後</div>
+        <div class="tl-action">
+          sorryページが出たら <strong>自動リトライ開始</strong>（5秒±2秒間隔）<br>
+          あなたは画面を見守るだけ！手動でリロードしないでください。
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">購入画面到達！</div>
+        <div class="tl-action">
+          🎉 <strong>ビープ音</strong>が鳴ります！<br>
+          座席が緑/オレンジでハイライトされるので、希望の席を選んでください。<br>
+          <strong>※ 購入ボタンは自動で押しません。自分で確認して購入してください。</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      💡 <strong>「📊 戦況モニターを開く」</strong>ボタンを押すとサイドパネルが開き、リトライ回数や経過時間をリアルタイムで確認できます。
+    </div>
+  </div>
+
+  <!-- 状態一覧 -->
+  <div class="section">
+    <h2><span class="section-number">4</span>画面状態と自動動作</h2>
+    <p style="margin-bottom:12px;">チケトレはページの内容を分析して、状態に応じた動作を自動で行います。</p>
+    <table>
+      <tr><th>状態</th><th>表示</th><th>自動動作</th></tr>
+      <tr><td>📋 LP同意画面</td><td>同意チェック画面</td><td>チェックを入れてボタンを自動クリック</td></tr>
+      <tr><td>❌ sorryページ</td><td>アクセス集中</td><td>設定間隔で自動リトライ</td></tr>
+      <tr><td>⏳ 待機画面</td><td>お待ちください</td><td>リロードせず遷移を監視</td></tr>
+      <tr><td>⏰ 発売前</td><td>公演回はありません</td><td>30秒間隔で確認</td></tr>
+      <tr><td style="color:#4CAF50; font-weight:bold;">🎉 購入画面</td><td>席種選択が表示</td><td>音声アラート＋座席ハイライト</td></tr>
+      <tr><td>🔐 ログイン画面</td><td>ログインフォーム</td><td>ID/パスワード自動入力</td></tr>
+      <tr><td>📋 確認画面</td><td>購入内容の確認</td><td>ハイライト表示（自動購入はしない）</td></tr>
+      <tr><td>🔴 完売</td><td>予定枚数終了</td><td>次の公演に自動切替</td></tr>
+      <tr><td>⚠️ エラー</td><td>エラーが発生</td><td>5秒後に自動リロード</td></tr>
+    </table>
+  </div>
+
+  <!-- 2公演攻める場合 -->
+  <div class="section">
+    <h2><span class="section-number">5</span>2公演を同時に攻める場合</h2>
+    <p style="margin-bottom:16px;">ぴあは1アカウント1セッション制限があるため、<strong>別ブラウザ＋別アカウント</strong>が必要です。</p>
+
+    <table>
+      <tr><th>ブラウザ</th><th>公演</th><th>アカウント</th></tr>
+      <tr><td>Chrome</td><td>公演A（優先）</td><td>自分のアカウント</td></tr>
+      <tr><td>Brave / Edge</td><td>公演B</td><td>家族のアカウントなど</td></tr>
+    </table>
+
+    <div class="warning">
+      ⚠️ <strong>同じアカウントで2ブラウザ</strong>は使えません。サーバー側で1セッションに制限されています。
+    </div>
+
+    <p style="margin-top:12px;">対応ブラウザ（Chrome拡張が使えるもの）:</p>
+    <div class="card-grid" style="margin-top:8px;">
+      <div class="card">
+        <div class="icon">🦁</div>
+        <div class="label">Brave</div>
+        <div class="desc">おすすめ。軽量＆すぐ使える</div>
+      </div>
+      <div class="card">
+        <div class="icon">🌐</div>
+        <div class="label">Microsoft Edge</div>
+        <div class="desc">Mac版あり</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <h2><span class="section-number">?</span>よくある質問</h2>
+
+    <details>
+      <summary>発射を押したけど画面が開かない</summary>
+      <p>ターゲット公演のURLが空、またはチェックボックスがOFFになっていないか確認してください。URLを入力して「💾 保存」を押してから「🚀 発射」を押してください。</p>
+    </details>
+
+    <details>
+      <summary>リトライが5秒じゃなくて30秒になる</summary>
+      <p>発売前は「not-yet（発売前）」状態と判定されるため、30秒間隔になります。発売開始後にsorryページが表示されれば、設定通りの間隔（デフォルト5秒）でリトライします。</p>
+    </details>
+
+    <details>
+      <summary>2つ目のタブが同意画面に戻される</summary>
+      <p>ぴあは1アカウント1セッションです。同じブラウザで複数タブを開くとセッション競合が起きます。1ブラウザ1公演で使ってください。</p>
+    </details>
+
+    <details>
+      <summary>自動で購入ボタンは押してくれる？</summary>
+      <p><strong>いいえ。</strong>チケトレは購入ボタンを自動で押しません。座席選択のハイライトと通知までがサポート範囲です。最終確認と購入は必ず自分で行ってください。</p>
+    </details>
+
+    <details>
+      <summary>アカウント情報は安全？</summary>
+      <p>ID/パスワードはブラウザのローカルストレージ（chrome.storage.local）にのみ保存されます。外部サーバーへの送信は一切行いません。ソースコードは公開されているので確認できます。</p>
+    </details>
+
+    <details>
+      <summary>停止するには？</summary>
+      <p>ポップアップの「⏹ 停止」ボタンを押すか、タブを閉じてください。</p>
+    </details>
+  </div>
+
+  <!-- チェックリスト -->
+  <div class="section">
+    <h2><span class="section-number">✓</span>本番前チェックリスト</h2>
+    <div style="background:#16213e; border-radius:10px; padding:20px;">
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        チケトレがChromeにインストールされている
+      </label>
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        ぴあ会員ID・パスワードを入力して保存した
+      </label>
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        ターゲット公演のURLを設定した
+      </label>
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        決済方法と枚数を設定した
+      </label>
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        音声アラートがONになっている
+      </label>
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        PCの音量が上がっている（アラート用）
+      </label>
+      <label style="display:block; padding:8px 0; font-size:14px; cursor:pointer;">
+        <input type="checkbox" style="accent-color:#e94560; width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+        不要なタブ・アプリを閉じた（メモリ確保）
+      </label>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  🎫 チケトレ v0.1.0 — <a href="https://github.com/hrtaym1114-github/ticketre">GitHub</a><br>
+  ローカル動作 / データ外部送信なし
+</div>
+
+</body>
+</html>
