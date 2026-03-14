@@ -103,6 +103,81 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       });
       return true;
 
+    case 'REOPEN_TAB_SELF':
+      // content scriptから: 自分のタブを閉じて新タブで開き直す
+      if (tabId) {
+        (async () => {
+          const url = message.url;
+          const oldState = tabStates.get(tabId);
+
+          try {
+            tabStates.delete(tabId);
+            await chrome.tabs.remove(tabId);
+          } catch (e) {
+            console.warn('[チケトレ] 旧タブ削除失敗:', e);
+          }
+
+          try {
+            const newTab = await chrome.tabs.create({ url, active: true });
+            tabStates.set(newTab.id, {
+              show: oldState?.show || 'unknown',
+              status: 'loading',
+              priority: oldState?.priority || 99,
+              retryCount: oldState?.retryCount || 0,
+              updatedAt: Date.now(),
+              url: url,
+              originalUrl: url
+            });
+            if (battleMode && currentBattleTabId === tabId) {
+              currentBattleTabId = newTab.id;
+            }
+            broadcastState();
+          } catch (e) {
+            console.error('[チケトレ] 新タブ作成失敗:', e);
+          }
+        })();
+      }
+      break;
+
+    case 'REOPEN_TAB':
+      // 古いタブを閉じて新しいタブで元URLを開き直す
+      (async () => {
+        const oldTabId = message.oldTabId;
+        const url = message.url;
+        const oldState = tabStates.get(oldTabId);
+
+        // 古いタブを閉じる
+        try {
+          tabStates.delete(oldTabId);
+          await chrome.tabs.remove(oldTabId);
+        } catch (e) {
+          console.warn('[チケトレ] 旧タブ削除失敗:', e);
+        }
+
+        // 新しいタブで開き直す
+        try {
+          const newTab = await chrome.tabs.create({ url, active: true });
+          tabStates.set(newTab.id, {
+            show: oldState?.show || 'unknown',
+            status: 'loading',
+            priority: oldState?.priority || 99,
+            retryCount: 0,
+            updatedAt: Date.now(),
+            url: url,
+            originalUrl: url
+          });
+          // バトル中なら現在のタブIDを更新
+          if (battleMode && currentBattleTabId === oldTabId) {
+            currentBattleTabId = newTab.id;
+          }
+          broadcastState();
+        } catch (e) {
+          console.error('[チケトレ] 新タブ作成失敗:', e);
+        }
+      })();
+      sendResponse({ ok: true });
+      return true;
+
     case 'REGISTER_TAB':
       if (tabId) {
         tabStates.set(tabId, {

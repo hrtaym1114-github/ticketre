@@ -7,6 +7,7 @@ const statusLabels = {
   'loading': { icon: '🔄', text: '読み込み中...' },
   'sorry': { icon: '❌', text: 'sorryページ → リトライ中' },
   'waiting': { icon: '⏳', text: '待機中（リロード禁止）' },
+  'congested': { icon: '🚧', text: 'アクセス集中 → 開き直し待ち' },
   'blank': { icon: '⚪', text: '真っ白 → 30秒後リロード' },
   'purchase': { icon: '🎉', text: '購入画面到達！' },
   'not-yet': { icon: '⏰', text: '発売前 → 30秒後リトライ' },
@@ -87,6 +88,18 @@ function updateUI(tabStates, battleMode) {
       card.appendChild(actionsDiv);
     }
 
+    // 全タブに「開き直す」ボタンを表示（purchase以外）
+    if (state.status !== 'purchase') {
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'tab-actions';
+      const reopenBtn = document.createElement('button');
+      reopenBtn.className = 'reopen-btn';
+      reopenBtn.textContent = '🔁 新しいタブで開き直す';
+      reopenBtn.addEventListener('click', () => reopenInNewTab(tabId, state.originalUrl || state.url));
+      actionsDiv.appendChild(reopenBtn);
+      card.appendChild(actionsDiv);
+    }
+
     container.appendChild(card);
   });
 
@@ -106,6 +119,14 @@ function updateUI(tabStates, battleMode) {
 
 function focusTab(tabId) {
   chrome.tabs.update(+tabId, { active: true });
+}
+
+function reopenInNewTab(oldTabId, url) {
+  chrome.runtime.sendMessage({
+    type: 'REOPEN_TAB',
+    oldTabId: +oldTabId,
+    url: url
+  });
 }
 
 // --- メッセージ受信 ---

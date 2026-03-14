@@ -94,7 +94,12 @@
       return { type: 'lp-consent', url };
     }
 
-    // 1. sorryページ判定（最優先）
+    // 1a. アクセス集中ページ判定（再読み込み禁止の案内）
+    if (bodyText.includes('アクセスが集中') && bodyText.includes('再読み込みは行わず')) {
+      return { type: 'congested', url };
+    }
+
+    // 1b. sorryページ判定
     if (isSorryUrl(url) ||
         (bodyText.includes('アクセスが集中') && !bodyText.includes('お待ちください'))) {
       return { type: 'sorry', url };
@@ -186,6 +191,23 @@
       case 'lp-consent':
         // LP同意画面 → 自動で同意して通過
         autoPassConsent();
+        break;
+
+      case 'congested':
+        showOverlay('🚧 アクセス集中', `アクセスが集中しています。新しいタブで自動リトライします... (${retryCount}回目)`);
+        if (config?.retryEnabled && retryCount < (config.maxRetries || 30)) {
+          const interval = getRetryInterval();
+          retryTimer = setTimeout(() => {
+            retryCount++;
+            chrome.storage.local.set({ ['ticketre_retryCount_' + getTabKey()]: retryCount });
+            // リロードではなく新しいタブで開き直す
+            chrome.runtime.sendMessage({
+              type: 'REOPEN_TAB_SELF',
+              url: originalUrl
+            });
+          }, interval);
+          updateOverlayTimer(interval);
+        }
         break;
 
       case 'sorry':
